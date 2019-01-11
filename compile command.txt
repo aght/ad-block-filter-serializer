@@ -1,1 +1,0 @@
-cl /Fo.\obj\ /Fefserialize /EHsc .\cpp\*.cc .\cpp\*.cpp

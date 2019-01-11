@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <Windows.h>
-#include <atlstr.h>
 
 #include "ad_block_client.h"
 
@@ -64,52 +63,37 @@ std::vector<std::string> getFilesInPath(std::string path)
     return fileNames;
 }
 
-void serializeFilter(std::string path, std::string output)
-{
-    AdBlockClient client;
-    client.parse(getFileContents(path.c_str()).c_str());
-
-    std::string fileName = path.substr(path.find_last_of("/") + 1, path.length());
-
-    int size;
-    char *buffer = client.serialize(&size);
-
-    if (output.find_last_of("/") != output.length())
-    {
-        output = output.append("/");
-    }
-
-    if (output.find_first_of("./") != 0)
-    {
-        std::string prefix = "./";
-        output = prefix.append(output);
-    }
-
-    std::string outputPath = output.append(stripExtenstion(fileName)).append(".dat");
-
-    writeFile(outputPath.c_str(), buffer, size);
-}
-
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 2)
     {
-        std::cout << "Usage: fserialize [input directory of filters] [output directory]" << std::endl;
+        std::cout << "Usage: fserialize [input directory of filters]" << std::endl;
         return 0;
     }
 
     std::string input = argv[1];
-    std::string output = argv[2];
+
+    if (input.find_last_of("/") != input.length() - 1)
+    {
+        input.append("/");
+    }
+
+    AdBlockClient client;
 
     for (auto &item : getFilesInPath(input))
     {
-        if (input.find_last_of("/") != input.length() - 1)
-        {
-            input.append("/");
-        }
+        std::string tmp = input;
 
-        serializeFilter(input.append(item), output);
+        std::cout << "Parsing: " << tmp.append(item) << std::endl;
+
+        std::string list = getFileContents(tmp.c_str());
+
+        client.parse(list.c_str());
     }
+
+    int size;
+    char *buffer = client.serialize(&size);
+    writeFile("./filter.dat", buffer, size);
 
     return 0;
 }
