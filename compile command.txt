@@ -1,0 +1,1 @@
+cl /Fo.\obj\ /Fea /EHsc .\cpp\*.cc .\cpp\*.cpp
