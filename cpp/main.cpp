@@ -17,14 +17,15 @@ std::string stripExtenstion(const std::string &fileName)
 
 std::string getFileContents(const char *filename)
 {
-  std::ifstream in(filename, std::ios::in);
-  if (in) {
-    std::ostringstream contents;
-    contents << in.rdbuf();
-    in.close();
-    return(contents.str());
-  }
-  throw(errno);
+    std::ifstream in(filename, std::ios::in);
+    if (in)
+    {
+        std::ostringstream contents;
+        contents << in.rdbuf();
+        in.close();
+        return (contents.str());
+    }
+    throw(errno);
 }
 
 void writeFile(const char *filename, const char *buffer, int length)
@@ -73,11 +74,13 @@ void serializeFilter(std::string path, std::string output)
     int size;
     char *buffer = client.serialize(&size);
 
-    if (output.find_last_of("/") != output.length()) {
+    if (output.find_last_of("/") != output.length())
+    {
         output = output.append("/");
     }
 
-    if (output.find_first_of("./") != 0) {
+    if (output.find_first_of("./") != 0)
+    {
         std::string prefix = "./";
         output = prefix.append(output);
     }
@@ -91,7 +94,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-        std::cout << "Usage: fcompile [input directory of filters] [output directory]" << std::endl;
+        std::cout << "Usage: fserialize [input directory of filters] [output directory]" << std::endl;
         return 0;
     }
 
